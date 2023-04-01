@@ -22,7 +22,7 @@ interface IERC2981 is IERC165 {
     ) external view returns (address receiver, uint256 royaltyAmount);
 }
 
-contract Nakamigos is ERC721, Ownable, IERC2981 {
+contract ColorfulApeClub is ERC721, Ownable, IERC2981 {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private supply;
@@ -156,6 +156,10 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
 
     function _baseURI() internal view virtual override returns (string memory) {
         return uriPrefix;
+    }
+
+    function setBaseURI(string memory uri) public onlyOwner {
+        uriPrefix = uri;
     }
 
     function royaltyInfo(

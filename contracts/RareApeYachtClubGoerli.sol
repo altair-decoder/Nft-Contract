@@ -22,7 +22,7 @@ interface IERC2981 is IERC165 {
     ) external view returns (address receiver, uint256 royaltyAmount);
 }
 
-contract Nakamigos is ERC721, Ownable, IERC2981 {
+contract RareApeYachtClubGoerli is ERC721, Ownable, IERC2981 {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private supply;
@@ -31,9 +31,9 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
     string public uriSuffix = "";
 
     uint256 public mintCost = 0.1 ether;
-    uint256 public maxSupply = 20000;
-    uint256 public maxMintAmountPerTx = 10;
-    uint256 mintLimit = 10;
+    uint256 public maxSupply = 10000;
+    uint256 public maxMintAmountPerTx = 5;
+    uint256 mintLimit = 5;
     mapping(address => uint256) public mintCount;
     address public beneficiary;
     address public royalties;
@@ -156,6 +156,14 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
 
     function _baseURI() internal view virtual override returns (string memory) {
         return uriPrefix;
+    }
+
+    function setBaseURI(string memory uri) public onlyOwner {
+        uriPrefix = uri;
+    }
+
+    function setUriSuffix(string memory newData) public onlyOwner {
+        uriSuffix = newData;
     }
 
     function royaltyInfo(

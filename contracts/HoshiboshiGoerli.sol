@@ -22,7 +22,7 @@ interface IERC2981 is IERC165 {
     ) external view returns (address receiver, uint256 royaltyAmount);
 }
 
-contract Nakamigos is ERC721, Ownable, IERC2981 {
+contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private supply;
@@ -31,7 +31,7 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
     string public uriSuffix = "";
 
     uint256 public mintCost = 0.1 ether;
-    uint256 public maxSupply = 20000;
+    uint256 public maxSupply = 2222;
     uint256 public maxMintAmountPerTx = 10;
     uint256 mintLimit = 10;
     mapping(address => uint256) public mintCount;
@@ -46,6 +46,7 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
         beneficiary = owner();
         royalties = owner();
         uriPrefix = _initialBaseURI;
+        supply.increment();
     }
 
     modifier mintRequire(uint256 _mintAmount) {
@@ -82,8 +83,8 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
         uint256 count = _recipients.length;
         for (uint256 i = 0; i < count; i++) {
             for (uint256 j = 0; j < _amount; j++) {
-                _safeMint(_recipients[i], supply.current());
-                supply.increment();
+                uint256 _tokenGenId = supply.current();
+                _safeMint(_recipients[i], _tokenGenId);
             }
         }
     }
@@ -149,13 +150,21 @@ contract Nakamigos is ERC721, Ownable, IERC2981 {
 
     function _mintLoop(address _receiver, uint256 _mintAmount) internal {
         for (uint256 i = 0; i < _mintAmount; i++) {
-            _safeMint(_receiver, supply.current());
-            supply.increment();
+            uint256 _tokenGenId = supply.current();
+            _safeMint(_receiver, _tokenGenId);
         }
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
         return uriPrefix;
+    }
+
+    function setBaseURI(string memory uri) public onlyOwner {
+        uriPrefix = uri;
+    }
+
+    function setUriSuffix(string memory newData) public onlyOwner {
+        uriSuffix = newData;
     }
 
     function royaltyInfo(
