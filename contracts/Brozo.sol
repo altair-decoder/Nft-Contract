@@ -17,21 +17,20 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 interface IERC2981 is IERC165 {
     function royaltyInfo(
         uint256 tokenId,
-        uint256 salePrice,
-        uint256 royaliPercentage
+        uint256 salePrice
     ) external view returns (address receiver, uint256 royaltyAmount);
 }
 
-contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
+contract Brozo is ERC721, Ownable, IERC2981 {
     using Strings for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private supply;
 
     string public uriPrefix = "";
-    string public uriSuffix = "";
+    string public uriSuffix = ".json";
 
-    uint256 public mintCost = 0.1 ether;
-    uint256 public maxSupply = 2222;
+    uint256 public mintCost = 0.05 ether;
+    uint256 public maxSupply = 8008;
     uint256 public maxMintAmountPerTx = 10;
     uint256 mintLimit = 10;
     mapping(address => uint256) public mintCount;
@@ -46,7 +45,6 @@ contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
         beneficiary = owner();
         royalties = owner();
         uriPrefix = _initialBaseURI;
-        supply.increment();
     }
 
     modifier mintRequire(uint256 _mintAmount) {
@@ -83,8 +81,7 @@ contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
         uint256 count = _recipients.length;
         for (uint256 i = 0; i < count; i++) {
             for (uint256 j = 0; j < _amount; j++) {
-                uint256 newTokenId = totalSupply() + 1;
-                _safeMint(_recipients[i], newTokenId);
+                _safeMint(_recipients[i], supply.current());
                 supply.increment();
             }
         }
@@ -151,8 +148,7 @@ contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
 
     function _mintLoop(address _receiver, uint256 _mintAmount) internal {
         for (uint256 i = 0; i < _mintAmount; i++) {
-            uint256 newTokenId = totalSupply() + 1;
-            _safeMint(_receiver, newTokenId);
+            _safeMint(_receiver, supply.current());
             supply.increment();
         }
     }
@@ -171,11 +167,10 @@ contract HoshiboshiGoerli is ERC721, Ownable, IERC2981 {
 
     function royaltyInfo(
         uint256 _tokenId,
-        uint256 _salePrice,
-        uint256 _percentage
+        uint256 _salePrice
     ) external view returns (address, uint256 royaltyAmount) {
         _tokenId; // silence solc warning
-        royaltyAmount = (_salePrice / 100) * _percentage;
+        royaltyAmount = (_salePrice / 100) * 5;
         return (royalties, royaltyAmount);
     }
 }

@@ -1,20 +1,15 @@
 const hre = require("hardhat");
 
 async function main() {
-  const HoshiboshiGoerli = await hre.ethers.getContractFactory(
-    "HoshiboshiGoerli"
-  );
-  const _HoshiboshiGoerliDeployed = await HoshiboshiGoerli.deploy(
-    "Hoshiboshi Goerli",
-    "hoshichan",
-    "https://arweave.net/6K3w3rK8LdFIryzm9wmSTIrDTnPbnyYjXJGvDZxxTEU/"
+  const Quirkies = await hre.ethers.getContractFactory("Quirkies");
+  const _QuirkiesDeployed = await Quirkies.deploy(
+    "Quirkies Goerli",
+    "QRKSG",
+    "https://meebits.larvalabs.com/meebit/"
   );
 
-  await _HoshiboshiGoerliDeployed.deployed();
-  console.log(
-    "HoshiboshiGoerli Nft was deployed to:",
-    _HoshiboshiGoerliDeployed.address
-  );
+  await _QuirkiesDeployed.deployed();
+  console.log("Quirkies Nft was deployed to:", _QuirkiesDeployed.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
